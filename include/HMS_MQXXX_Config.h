@@ -1,0 +1,69 @@
+   /*
+ ====================================================================================================
+ * File:        HMS_MQXXX_Config.h
+ * Author:      Hamas Saeed
+ * Version:     Rev_1.0.0
+ * Date:        Sep 28 2025
+ * Brief:       This Package Provide MQXXX Driver Selection
+ * 
+ ====================================================================================================
+ * License: 
+ * MIT License
+ * 
+ * Copyright (c) 2025 Hamas Saeed
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ * 
+ * For any inquiries, contact Hamas Saeed at hamasaeed@gmail.com
+ *
+ ====================================================================================================
+ */
+
+#ifndef HMS_MQXXX_CONFIG_H
+#define HMS_MQXXX_CONFIG_H
+
+/*
+    ┌─────────────────────────────────────────────────────────────────────┐
+    │ Note:     Enable only if ChronoLog is included                      │
+    │ Requires: ChronoLog library → https://github.com/Hamas888/ChronoLog │
+    └─────────────────────────────────────────────────────────────────────┘
+*/
+#define HMS_MQXXX_DEBUG_ENABLED           0                             // Enable debug messages (1=enabled, 0=disabled)
+
+
+/*
+    ┌─────────────────────────────────────────────────────────────────────┐
+    │ Note:    Driver selection for MQXXX devices                         │
+    │ Support: MQ-2, MQ-135                                               │
+    └─────────────────────────────────────────────────────────────────────┘
+*/
+// #define HMS_MQXXX_MQ2                                                   // Define the MQ-2 device to be used
+// #define HMS_MQXXX_MQ135                                                 // Define the MQ-135 device to be used
+
+
+/*
+    ┌─────────────────────────────────────────────────────────────────────┐
+    │ Note:    Configuration parameters for MQXXX devices                 │
+    └─────────────────────────────────────────────────────────────────────┘
+*/
+#define HMS_MQXXX_MAX_A                   1e30
+#define HMS_MQXXX_MAX_B                   100.0
+
+
+#endif // HMS_MQXXX_CONFIG_H

@@ -1,0 +1,69 @@
+{
+  "name": "HMS_MQXXX_DRIVER",
+  "version": "1.0.0",
+  "description": "This Package Provide  MQXXX Gyroscope & Accelerometer Driver Library for Cross Platform (ARDUINO/STM/ESP/nRF)",
+  "keywords": [
+    "MQXXX",
+    "Gases Sensor",
+    "MQ-2",
+    "MQ-3",
+    "MQ-4",
+    "MQ-5",
+    "MQ-6",
+    "MQ-7",
+    "MQ-8",
+    "MQ-9",
+    "MQ-135",
+    "MQ-136",
+    "MQ-137",
+    "MQ-138",
+    "Driver",
+    "ESP32",
+    "STM32",
+    "nRF52",
+    "Arduino",
+    "Feedback"
+  ],
+  "authors": [
+    {
+      "name": "Hamas Saeed",
+      "email": "hamasaeed888@gmail.com",
+      "url": "https://github.com/Hamas888",
+      "maintainer": true
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Hamas888/HMS_MQXXX_DRIVER.git"
+  },
+  "frameworks": ["arduino", "espidf"],
+  "platforms": ["espressif32"],
+  "build": {
+    "flags": [
+      "-std=gnu++17"
+    ],
+    "unflags": [
+      "-std=gnu++11"
+    ]
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/Hamas888/HMS_MQXXX_DRIVER",
+  "examples": [
+    "examples"
+  ],
+  "export": {
+    "include": [
+      "include",
+      "src",
+      "examples",
+      "library.json",
+      "LICENSE",
+      "README.md"
+    ],
+    "exclude": [
+      "test",
+      ".pio",
+      ".vscode"
+    ]
+  }
+}

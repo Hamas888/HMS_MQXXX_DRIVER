@@ -74,8 +74,15 @@
 
 typedef enum {
     HMS_MQXXX_MQ2,
-    HMS_MQXXX_MQ135
+    HMS_MQXXX_MQ131,
+    HMS_MQXXX_MQ135,
+    HMS_MQXXX_MQ303A
 } HMS_MQXXX_Type;
+
+typedef enum {
+    HMS_MQXXX_LINEAR      = 2,
+    HMS_MQXXX_EXPONENTIAL = 1
+} HMS_MQXXX_Regression;
 
 typedef enum {
     HMS_MQXXX_OK       = 0x00,
@@ -83,57 +90,49 @@ typedef enum {
     HMS_MQXXX_NOT_FOUND= 0x04
 } HMS_MQXXX_StatusTypeDef;
 
-typedef enum {
-    HMS_MQXXX_LINEAR      = 2,
-    HMS_MQXXX_EXPONENTIAL = 1
-} HMS_MQXXX_RegressionMethod;
-
 class HMS_MQXXX {
     public:
-        #if defined(HMS_MQXXX_PLATFORM_STM32_HAL)
-            HMS_MQXXX(GPIO_TypeDef *port, uint32_t pin, HMS_MQXXX_Type = HMS_MQXXX_MQ2);
+        #if defined(HMS_MQXXX_PLATFORM_ARDUINO)
+            HMS_MQXXX(uint8_t pin = A0, HMS_MQXXX_Type type = HMS_MQXXX_DEFAULT_TYPE);
+        #elif defined(HMS_MQXXX_PLATFORM_STM32_HAL)
+            HMS_MQXXX(GPIO_TypeDef *port, uint32_t pin, HMS_MQXXX_Type type = HMS_MQXXX_DEFAULT_TYPE);
+        #elif defined(HMS_MQXXX_PLATFORM_ESP_IDF)
+            HMS_MQXXX(uint8_t pin = 36, HMS_MQXXX_Type type = HMS_MQXXX_DEFAULT_TYPE);
+        #elif defined(HMS_MQXXX_PLATFORM_ZEPHYR)
+            HMS_MQXXX(uint8_t pin = 0, HMS_MQXXX_Type type = HMS_MQXXX_DEFAULT_TYPE);
         #endif
 
         //Functions to set values
         HMS_MQXXX_StatusTypeDef init();
         HMS_MQXXX_StatusTypeDef update();
-        // void externalADCUpdate(float volt);
-        // void setR0(float R0 = 10);
-        // void setRL(float RL = 10);
-        // void setA(float a);
-        // void setB(float b);
-        // void setRegressionMethod(int regressionMethod);
-        // void setVoltResolution(float voltage_resolution =  5);
-        // void setVCC(float vcc = 5);
-        // void setPin(int pin = 1);
-        // void serialDebug(bool onSetup = false); //Show on serial port information about sensor
-        // void setADC(int value); //For external ADC Usage
+        float readSensor(float correctionFactor = 0.0);
+        float setRatioAndGetPPM(float ratioValue);
+        float calibrate(float ratioInCleanAir, float correctionFactor = 0.0);
     
-        //user functions
-        // float calibrate(float ratioInCleanAir, float correctionFactor = 0.0);
-        // float readSensor(bool isMQ303A = false, float correctionFactor = 0.0, bool injected=false);
-        // float readSensorR0Rs(float correctionFactor = 0.0);
         // float validateEcuation(float ratioInput = 0);
-    
-        //get function for info
-        float getA() const                                      { return a;                }
-        float getB() const                                      { return b;                }
-        float getR0() const                                     { return r0;               }
-        float getRL() const                                     { return rl;               }
-        float getADC() const                                    { return adc;              }
-        HMS_MQXXX_Type getType() const                          { return type;             }
 
-        HMS_MQXXX_RegressionMethod getRegressionMethod() const  { return regressionMethod; }
-
-        // float getVoltResolution();
-        // float getVCC();
-        // String getRegressionMethod();
-        // float getVoltage(bool read = true, bool injected = false, int value = 0);
-        // float stringTofloat(String & str);
-
-        // functions for testing
-        float getRS();    
+        void setA(float value);
+        void setB(float value);
         float setRsR0RatioGetPPM(float value);
+
+        void setR0(float value = 10)                            { r0 = value;                 }
+        void setRL(float value = 10)                            { rl = value;                 }
+        void setVCC(float value = 5)                            { vcc = value;                }
+        void setVoltResolution(float value = 5)                 { voltageResolution = value;  }
+        void setRegressionMethod(HMS_MQXXX_Regression method)   { regression = method;        }
+
+        float getRS();  
+        float getVoltage(bool read = true, bool injected = false, int value = 0);
+
+        float getA() const                                      { return a;                   }
+        float getB() const                                      { return b;                   }
+        float getR0() const                                     { return r0;                  }
+        float getRL() const                                     { return rl;                  }
+        float getADC() const                                    { return adc;                 }
+        float getVCC() const                                    { return vcc;                 }
+        float getVoltResolution() const                         { return voltageResolution;   }
+        HMS_MQXXX_Type getType() const                          { return type;                }
+        HMS_MQXXX_Regression getRegressionMethod() const        { return regression;          }
 
     private:
         #if defined(HMS_MQXXX_PLATFORM_ARDUINO)
@@ -158,10 +157,10 @@ class HMS_MQXXX {
             uint32_t        pin                 = 0;
             GPIO_TypeDef    *port               = NULL;
         #endif
-
-        bool                       firstFlag = false;                           // Flag for first initialization
-        float                       vcc = 5.0;                                  // Sensor supply voltage
-        float                       rl = 10;                                    // Load resistance in kilo ohms
+        
+        bool                        firstFlag           = false;                // Flag for first initialization
+        float                       vcc                 = 5.0;                  // Sensor supply voltage
+        float                       rl                  = 10;                   // Load resistance in kilo ohms
         float                       a;                                          // Coefficient a for the equation
         float                       b;                                          // Coefficient b for the equation
         float                       adc;                                        // Raw ADC value
@@ -171,8 +170,13 @@ class HMS_MQXXX {
         float                       ratio;                                      // Rs/R0 ratio
         float                       rsCalc;                                     // Calculated sensor resistance
         float                       sensorVolt;                                 // Sensor voltage
+        uint8_t                     retries             = 2;                    // Number of read retries
+        uint8_t                     retryInterval       = 20;                   // Retry interval in milliseconds
         HMS_MQXXX_Type              type;                                       // Sensor type
-        HMS_MQXXX_RegressionMethod  regressionMethod;                           // Regression method
+        HMS_MQXXX_Regression        regression;                                 // Regression method
+
+        void mqDelay(uint32_t ms);
+        void setDefaultValues();                                                // Helper function to set default sensor values
 };
 
 #endif // HMS_MQXXX_DRIVER_H

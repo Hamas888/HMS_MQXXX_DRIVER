@@ -3,76 +3,75 @@
 
 #if defined(HMS_MQXXX_PLATFORM_ARDUINO)
 HMS_MQXXX::HMS_MQXXX(uint8_t pin, HMS_MQXXX_Type type) : pin(pin), type(type) {
-    setDefaultValues();
+  setDefaultValues();
 }
 
 HMS_MQXXX_StatusTypeDef HMS_MQXXX::init() {
-    // For Arduino, set pin as INPUT
-    pinMode(pin, INPUT);
-    return HMS_MQXXX_OK;
+  // For Arduino, set pin as INPUT
+  pinMode(pin, INPUT);
+  return HMS_MQXXX_OK;
 }
 
 #elif defined(HMS_MQXXX_PLATFORM_STM32_HAL)
 HMS_MQXXX::HMS_MQXXX(GPIO_TypeDef *port, uint32_t pin, HMS_MQXXX_Type type) : port(port), pin(pin), type(type) {
-    setDefaultValues();
+  setDefaultValues();
 }
 
 HMS_MQXXX_StatusTypeDef HMS_MQXXX::init() {
-    // For STM32, ADC is already configured in CubeMX
-    // Just initialize any required variables
-    return HMS_MQXXX_OK;
+  // For STM32, ADC is already configured in CubeMX
+  // Just initialize any required variables
+  return HMS_MQXXX_OK;
 }
 
 #elif defined(HMS_MQXXX_PLATFORM_ESP_IDF)
 HMS_MQXXX::HMS_MQXXX(uint8_t pin, HMS_MQXXX_Type type) : pin(pin), type(type) {
-    setDefaultValues();
+  setDefaultValues();
 }
 
 HMS_MQXXX_StatusTypeDef HMS_MQXXX::init() {
-    // Initialize ESP-IDF ADC
-    return HMS_MQXXX_OK;
+  // Initialize ESP-IDF ADC
+  return HMS_MQXXX_OK;
 }
 
 #elif defined(HMS_MQXXX_PLATFORM_ZEPHYR)
 HMS_MQXXX::HMS_MQXXX(uint8_t pin, HMS_MQXXX_Type type) : pin(pin), type(type) {
-    setDefaultValues();
+  setDefaultValues();
 }
 
 HMS_MQXXX_StatusTypeDef HMS_MQXXX::init() {
-    // Initialize Zephyr ADC
-    return HMS_MQXXX_OK;
+  // Initialize Zephyr ADC
+  return HMS_MQXXX_OK;
 }
 #endif
 
-// Private helper function to set default values based on sensor type
 void HMS_MQXXX::setDefaultValues() {
-    switch(type) {
-        case HMS_MQXXX_MQ2:
-            a = HMS_MQXXX_MQ2_A_DEFAULT;
-            b = HMS_MQXXX_MQ2_B_DEFAULT;
-            regression = HMS_MQXXX_MQ2_REGRESSION;
-            break;
-        case HMS_MQXXX_MQ135:
-            a = HMS_MQXXX_MQ135_A_DEFAULT;
-            b = HMS_MQXXX_MQ135_B_DEFAULT;
-            regression = HMS_MQXXX_MQ135_REGRESSION;
-            break;
-        case HMS_MQXXX_MQ131:
-            a = HMS_MQXXX_MQ131_A_DEFAULT;
-            b = HMS_MQXXX_MQ131_B_DEFAULT;
-            regression = HMS_MQXXX_MQ131_REGRESSION;
-            break;
-        case HMS_MQXXX_MQ303A:
-            a = HMS_MQXXX_MQ303A_A_DEFAULT;
-            b = HMS_MQXXX_MQ303A_B_DEFAULT;
-            regression = HMS_MQXXX_MQ303A_REGRESSION;
-            break;
-        default:
-            a = HMS_MQXXX_GENERIC_A_DEFAULT;
-            b = HMS_MQXXX_GENERIC_B_DEFAULT;
-            regression = HMS_MQXXX_GENERIC_REGRESSION;
-            break;
-    }
+  switch(type) {
+    case HMS_MQXXX_MQ2:
+      a = HMS_MQXXX_MQ2_A_DEFAULT;
+      b = HMS_MQXXX_MQ2_B_DEFAULT;
+      regression = HMS_MQXXX_MQ2_REGRESSION;
+      break;
+    case HMS_MQXXX_MQ135:
+      a = HMS_MQXXX_MQ135_A_DEFAULT;
+      b = HMS_MQXXX_MQ135_B_DEFAULT;
+      regression = HMS_MQXXX_MQ135_REGRESSION;
+      break;
+    case HMS_MQXXX_MQ131:
+      a = HMS_MQXXX_MQ131_A_DEFAULT;
+      b = HMS_MQXXX_MQ131_B_DEFAULT;
+      regression = HMS_MQXXX_MQ131_REGRESSION;
+      break;
+    case HMS_MQXXX_MQ303A:
+      a = HMS_MQXXX_MQ303A_A_DEFAULT;
+      b = HMS_MQXXX_MQ303A_B_DEFAULT;
+      regression = HMS_MQXXX_MQ303A_REGRESSION;
+      break;
+    default:
+      a = HMS_MQXXX_GENERIC_A_DEFAULT;
+      b = HMS_MQXXX_GENERIC_B_DEFAULT;
+      regression = HMS_MQXXX_GENERIC_REGRESSION;
+      break;
+  }
 }
 
 static inline bool willOverflow(double log_ppm) {

@@ -95,7 +95,7 @@ class HMS_MQXXX {
     #if defined(HMS_MQXXX_PLATFORM_ARDUINO)
       HMS_MQXXX(uint8_t pin = A0, HMS_MQXXX_Type type = HMS_MQXXX_DEFAULT_TYPE);
     #elif defined(HMS_MQXXX_PLATFORM_STM32_HAL)
-      HMS_MQXXX(GPIO_TypeDef *port, uint32_t pin, HMS_MQXXX_Type type = HMS_MQXXX_DEFAULT_TYPE);
+      HMS_MQXXX(ADC_HandleTypeDef *hadc, HMS_MQXXX_Type type = HMS_MQXXX_DEFAULT_TYPE);
     #elif defined(HMS_MQXXX_PLATFORM_ESP_IDF)
       HMS_MQXXX(uint8_t pin = 36, HMS_MQXXX_Type type = HMS_MQXXX_DEFAULT_TYPE);
     #elif defined(HMS_MQXXX_PLATFORM_ZEPHYR)
@@ -149,10 +149,9 @@ class HMS_MQXXX {
       uint8_t         adcBitResolution    = 10;
       uint8_t         pin                 = 36;
     #elif defined(HMS_MQXXX_PLATFORM_STM32_HAL)
-      float           voltageResolution   = 3.3;  
-      uint8_t         adcBitResolution    = 12;
-      uint32_t        pin                 = 0;
-      GPIO_TypeDef    *port               = NULL;
+      float             voltageResolution   = 3.3;  
+      uint8_t           adcBitResolution    = 12;
+      ADC_HandleTypeDef *MQXXX_hadc;
     #endif
             
     bool                        firstFlag           = false;                // Flag for first initialization

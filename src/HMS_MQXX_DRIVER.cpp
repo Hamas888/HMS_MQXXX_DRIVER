@@ -13,13 +13,26 @@ HMS_MQXXX_StatusTypeDef HMS_MQXXX::init() {
 }
 
 #elif defined(HMS_MQXXX_PLATFORM_STM32_HAL)
-HMS_MQXXX::HMS_MQXXX(GPIO_TypeDef *port, uint32_t pin, HMS_MQXXX_Type type) : port(port), pin(pin), type(type) {
+HMS_MQXXX::HMS_MQXXX(ADC_HandleTypeDef *hadc, HMS_MQXXX_Type type) : type(type) {
   setDefaultValues();
+  MQXXX_hadc = hadc;
 }
 
 HMS_MQXXX_StatusTypeDef HMS_MQXXX::init() {
   // For STM32, ADC is already configured in CubeMX
+   if(MQXXX_hadc == NULL){
+    return HMS_MQXXX_ERROR;
+  }
+
+  setRegressionMethod(regression);
+  float calcR0 = 0;
+  for(int i = 0; i<=HMS_CALIBRATIION_SAMPLES; i++)
+    {
+      calcR0 += calibrate(HMS_MQXXX_MQ2_CLEAN_AIR_RATIO,0);
+    }
+  setR0(calcR0/HMS_CALIBRATIION_SAMPLES);  
   // Just initialize any required variables
+  readSensor()
   return HMS_MQXXX_OK;
 }
 
@@ -72,6 +85,8 @@ void HMS_MQXXX::setDefaultValues() {
       regression = HMS_MQXXX_GENERIC_REGRESSION;
       break;
   }
+  setA(a);
+  setB(b);
 }
 
 static inline bool willOverflow(double log_ppm) {
@@ -144,8 +159,10 @@ float HMS_MQXXX::getVoltage(bool read, bool injected, int value) {
             adc = analogRead(pin);
         #elif defined(HMS_MQXXX_PLATFORM_STM32_HAL)
             // STM32 HAL ADC reading - assumes ADC is configured in CubeMX
-            // adc = HAL_ADC_GetValue(&hadc1); // User needs to adapt this
-            adc = 2048; // Placeholder - needs actual HAL implementation
+            HAL_ADC_Start(MQXXX_hadc);
+            HAL_ADC_PollForConversion(&MQXXX_hadc, 10);
+            adc = HAL_ADC_GetValue(MQXXX_hadc); // User needs to adapt this
+            //adc = 2048; // Placeholder - needs actual HAL implementation
         #elif defined(HMS_MQXXX_PLATFORM_ESP_IDF)
             // ESP-IDF ADC reading - needs ADC configuration
             adc = 2048; // Placeholder - needs actual ESP-IDF implementation
@@ -156,6 +173,10 @@ float HMS_MQXXX::getVoltage(bool read, bool injected, int value) {
         avg += adc;
         mqDelay(retryInterval);
     }
+    #if defined(HMS_MQXXX_PLATFORM_STM32_HAL)
+    HAL_ADC_Stop(MQXXX_hadc);
+    #endif
+
     voltage = (avg / retries) * voltageResolution / ((pow(2, adcBitResolution)) - 1);
     sensorVolt = voltage; // Update the sensor voltage
   }

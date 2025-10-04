@@ -366,6 +366,7 @@
 // Temperature Compensation (20°C baseline)
 #define HMS_MQXXX_TEMP_BASELINE             20.0f                    // Reference temperature (°C)
 #define HMS_MQXXX_TEMP_COEFF_GENERIC        0.004f                   // Generic temp coefficient (%/°C)
+#define HMS_CALIBRATIION_SAMPLES            5
 
 // MQ sensor-specific temperature coefficients
 #define HMS_MQXXX_MQ2_TEMP_COEFF            0.005f                   // Temperature coefficient (%/°C)
@@ -384,7 +385,7 @@
 #define HMS_MQXXX_MQ303A_HUMIDITY_COEFF     0.003f                   // Humidity coefficient (%/%RH) - Most affected
 
 // Simple compensation enable/disable (for easy on/off)
-#define HMS_MQXXX_ENABLE_TEMP_COMPENSATION  0                        // 1=enabled, 0=disabled
+#define HMS_MQXXX_ENABLE_ecTEMP_COMPENSATION  0                        // 1=enabled, 0=disabled
 #define HMS_MQXXX_ENABLE_HUMIDITY_COMPENSATION 0                     // 1=enabled, 0=disabled
 
 // Auto-select default values based on enabled sensor type

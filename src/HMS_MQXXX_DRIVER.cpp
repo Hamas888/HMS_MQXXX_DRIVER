@@ -32,7 +32,7 @@ HMS_MQXXX_StatusTypeDef HMS_MQXXX::init() {
     }
   setR0(calcR0/HMS_CALIBRATIION_SAMPLES);  
   // Just initialize any required variables
-  readSensor()
+  readSensor();
   return HMS_MQXXX_OK;
 }
 
@@ -160,7 +160,7 @@ float HMS_MQXXX::getVoltage(bool read, bool injected, int value) {
         #elif defined(HMS_MQXXX_PLATFORM_STM32_HAL)
             // STM32 HAL ADC reading - assumes ADC is configured in CubeMX
             HAL_ADC_Start(MQXXX_hadc);
-            HAL_ADC_PollForConversion(&MQXXX_hadc, 10);
+            HAL_ADC_PollForConversion(MQXXX_hadc, 10);
             adc = HAL_ADC_GetValue(MQXXX_hadc); // User needs to adapt this
             //adc = 2048; // Placeholder - needs actual HAL implementation
         #elif defined(HMS_MQXXX_PLATFORM_ESP_IDF)

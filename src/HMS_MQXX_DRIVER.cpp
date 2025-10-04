@@ -16,7 +16,6 @@ HMS_MQXXX_StatusTypeDef HMS_MQXXX::init() {
 HMS_MQXXX::HMS_MQXXX(ADC_HandleTypeDef *hadc, HMS_MQXXX_Type type) : type(type) {
   setDefaultValues();
   MQXXX_hadc = hadc;
-  init();
 }
 
 HMS_MQXXX_StatusTypeDef HMS_MQXXX::init() {
@@ -24,8 +23,7 @@ HMS_MQXXX_StatusTypeDef HMS_MQXXX::init() {
    if(MQXXX_hadc == NULL){
     return HMS_MQXXX_ERROR;
   }
-  setA(a);
-  setB(b);
+
   setRegressionMethod(regression);
   float calcR0 = 0;
   for(int i = 0; i<=HMS_CALIBRATIION_SAMPLES; i++)
@@ -87,6 +85,8 @@ void HMS_MQXXX::setDefaultValues() {
       regression = HMS_MQXXX_GENERIC_REGRESSION;
       break;
   }
+  setA(a);
+  setB(b);
 }
 
 static inline bool willOverflow(double log_ppm) {

@@ -66,8 +66,6 @@
   #include <stdio.h>
 #endif
 
-#endif // HMS_MQXXX_DRIVER_H
-
 #include "HMS_MQXXX_Config.h"
 
 #if defined(HMS_MQXXX_DEBUG_ENABLED) && (HMS_MQXXX_DEBUG_ENABLED == 1)

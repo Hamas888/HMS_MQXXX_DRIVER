@@ -61,6 +61,8 @@
   #include <zephyr/drivers/i2c.h>
 #elif defined(HMS_MQXXX_PLATFORM_STM32_HAL)
   #include "main.h"
+  #include <math.h>
+  #include <float.h>
   #include <stdio.h>
 #endif
 
